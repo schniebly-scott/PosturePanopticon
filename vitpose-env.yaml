@@ -1,0 +1,31 @@
+name: vitpose-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - numpy
+  - scipy
+  - matplotlib
+  - opencv
+  - jupyterlab
+  - notebook
+  - ipykernel
+  - ipython
+  - pillow
+  - tqdm
+  - cython
+  - scikit-learn
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit
+  - cudnn
+  - accelerate
+  - transformers
+  - xtcocotools
+  - pycocotools
+  - pyyaml
+  - pip
+
+  # pip install chumpy supervision huggingface-hub json-tricks rich
