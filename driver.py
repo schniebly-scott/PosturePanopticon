@@ -1,7 +1,8 @@
 import argparse
 import os
 from src.pose_estimator import PoseEstimator
-from src.video_processor import DetectionProcessor
+from src.posture_tracker import PostureTracker
+from src.detection_processor import DetectionProcessor
 
 def main():
     parser = argparse.ArgumentParser()
@@ -29,7 +30,7 @@ def main():
             'usyd-community/vitpose-plus-large',
             'usyd-community/vitpose-plus-huge'
         ],
-        default='usyd-community/vitpose-base'
+        default='usyd-community/vitpose-plus-small'
     )
     parser.add_argument(
         '--skip-frames',
@@ -46,11 +47,13 @@ def main():
         source = args.input
 
     pose_estimator = PoseEstimator(pose_model_name=args.pose_model)
+    posture_tracker = PostureTracker(buffer_size=30)
     detection_processor = DetectionProcessor(
         source=source,
         pose_estimator=pose_estimator,
         det_conf=args.det_conf,
-        skip_frames=args.skip_frames
+        skip_frames=args.skip_frames,
+        posture_tracker=posture_tracker
     )
     detection_processor.start()
 

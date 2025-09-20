@@ -36,7 +36,38 @@ def draw_keypoints(outputs, image):
             ])
             rgb = rgb*255
             # join the keypoint pairs to draw the skeletal structure
-            cv2.line(image, (int(keypoints[e, 0][0]), int(keypoints[e, 1][0])),
-                    (int(keypoints[e, 0][1]), int(keypoints[e, 1][1])),
-                    tuple(rgb), 2, lineType=cv2.LINE_AA)
+            cv2.line(image, tuple(map(int, keypoints[e[0]])), 
+                     tuple(map(int, keypoints[e[1]])), 
+                     tuple(rgb), 2, lineType=cv2.LINE_AA)
+    return image
+
+def draw_keypoints_single_pose(output, image):
+    """
+    :param output: single Output from the keypoint detector.
+    :param image: Image in PIL Image format.
+
+    Returns:
+        image: Annotated image Numpy array format.
+    """
+    image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+    keypoints = output['keypoints'].cpu().detach().numpy()
+    # proceed to draw the lines if the confidence score is above 0.9
+    keypoints = keypoints[:, :].reshape(-1, 2)
+    for p in range(keypoints.shape[0]):
+        # draw the keypoints
+        cv2.circle(image, (int(keypoints[p, 0]), int(keypoints[p, 1])), 
+                    3, (0, 0, 255), thickness=-1, lineType=cv2.FILLED)
+        # uncomment the following lines if you want to put keypoint number
+        # cv2.putText(image, f'{p}', (int(keypoints[p, 0]+10), int(keypoints[p, 1]-5)),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+    for ie, e in enumerate(EDGES):
+        # get different colors for the edges
+        rgb = matplotlib.colors.hsv_to_rgb([
+            ie/float(len(EDGES)), 1.0, 1.0
+        ])
+        rgb = rgb*255
+        # join the keypoint pairs to draw the skeletal structure
+        cv2.line(image, tuple(map(int, keypoints[e[0]])), 
+                 tuple(map(int, keypoints[e[1]])), 
+                 tuple(rgb), 2, lineType=cv2.LINE_AA)
     return image
